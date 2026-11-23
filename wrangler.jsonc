@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vientiane-site-survey",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  }
+  // OPTIONAL: Enable multi-device Cloud Sync across your survey team:
+  // 1. Run: npx wrangler kv namespace create SURVEY_KV
+  // 2. Uncomment below and paste the generated namespace ID:
+  // ,
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "SURVEY_KV",
+  //     "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+  //   }
+  // ]
+}
