@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4f46e5">
+  <title>Site Survey Tracker — 28 Government Offices (Vientiane)</title>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Noto Sans Lao -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Lao', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-16">
+
+  <!-- Sticky Top Header & Progress Bar -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-1.5 mb-1">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+              Vientiane Capital • 2-Day Fiber Route Plan (24–25 Nov 2026)
+            </span>
+            <span id="cf-status-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              <span id="cf-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span id="cf-status-text">Offline-Ready</span>
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">
+            28 Government Sites — Fiber Route &amp; Survey Tracker
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-500">
+            ແຜນສຳຫຼວດເສັ້ນທາງສາຍໄຟເບີ ເຄືອຂ່າຍລັດຖະບານ 28 ຈຸດ (ເລີ່ມຈາກ ສູນຂໍ້ມູນສາຍລົມ 09:00)
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2 self-start sm:self-center">
+          <button onclick="toggleLiveGps()" id="gps-toggle-btn" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span id="gps-toggle-label">Start Live GPS</span>
+          </button>
+          <button onclick="syncWithCloudflare()" id="cloud-sync-btn" class="hidden inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-xs transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            <span>Sync Cloud</span>
+          </button>
+          <button onclick="exportSummary()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            Copy Report
+          </button>
+          <button onclick="downloadCsvReport()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            CSV
+          </button>
+          <button onclick="exportJsonBackup()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer" title="Download full JSON backup">
+            Backup
+          </button>
+          <button onclick="document.getElementById('restore-json-input').click()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer" title="Restore JSON backup">
+            Restore
+          </button>
+          <input type="file" id="restore-json-input" accept="application/json" onchange="importJsonBackup(event)" class="hidden">
+          <button onclick="openResetModal()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Live GPS Status Bar -->
+      <div id="live-gps-banner" class="hidden mt-3 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+          </span>
+          <span class="font-semibold text-emerald-900">Live GPS:</span>
+          <span id="live-gps-coords" class="font-mono text-emerald-800">Acquiring satellites...</span>
+          <span id="live-gps-acc" class="text-emerald-700"></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="sortByNearest = !sortByNearest; renderSites();" id="nearest-btn" class="px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-emerald-800 font-semibold hover:bg-emerald-100 transition cursor-pointer">
+            Sort: Route Order
+          </button>
+        </div>
+      </div>
+
+      <!-- Overall Progress Bar -->
+      <div class="mt-3">
+        <div class="flex items-center justify-between text-xs font-semibold mb-1.5">
+          <span class="text-slate-600">Survey Completion Progress</span>
+          <span id="progress-text" class="text-indigo-600">0 / 28 Completed (0%)</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
+
+    <!-- Filter & Search Controls -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm mb-6">
+      <div class="flex flex-col md:flex-row gap-3 justify-between">
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            type="text"
+            id="search-input"
+            oninput="renderSites()"
+            placeholder="Search by site #, English or Lao name, or road..."
+            class="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+          >
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start md:self-auto">
+          <button onclick="setStatusFilter('all')" id="status-all" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-white text-slate-900 shadow-sm transition cursor-pointer">All</button>
+          <button onclick="setStatusFilter('pending')" id="status-pending" class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">Remaining</button>
+          <button onclick="setStatusFilter('completed')" id="status-completed" class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">Checked</button>
+        </div>
+      </div>
+
+      <!-- Day / Zone Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pt-3 mt-3 border-t border-slate-100 pb-1" id="day-tabs">
+        <button onclick="setDayFilter('all')" data-day="all" class="day-tab shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition cursor-pointer">
+          All Days (28)
+        </button>
+        <button onclick="setDayFilter(1)" data-day="1" class="day-tab shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition cursor-pointer">
+          Day 1: Tue 24/11 — City, South &amp; T4 Bypass (15)
+        </button>
+        <button onclick="setDayFilter(2)" data-day="2" class="day-tab shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition cursor-pointer">
+          Day 2: Wed 25/11 — Confirmed Visits &amp; That Luang/Patuxai (13)
+        </button>
+      </div>
+    </div>
+
+    <!-- Pole Route Inspection Checklist Reference -->
+    <details class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm mb-6 group">
+      <summary class="flex items-center justify-between cursor-pointer list-none font-bold text-sm text-slate-900">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-amber-100 text-amber-800 text-xs font-bold">7</span>
+          <span>Field Pole &amp; Route Inspection Checklist (ລາຍການກວດຕາມເສັ້ນທາງ ແລະ ແຕ່ລະຈຸດ)</span>
+        </div>
+        <span class="text-xs font-medium text-indigo-600 group-open:hidden">Show items</span>
+        <span class="text-xs font-medium text-slate-400 hidden group-open:inline">Hide</span>
+      </summary>
+      <div class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+        <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl">
+          <span class="text-indigo-600 font-bold">1.</span>
+          <span><strong>ປະເພດເສົາ &amp; ເຈົ້າຂອງເສົາ:</strong> EDL / Telecom / Other + ຖ່າຍຮູບ + GPS</span>
+        </div>
+        <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl">
+          <span class="text-indigo-600 font-bold">2.</span>
+          <span><strong>ຄວາມສູງ &amp; ແຮງດັນໄຟຟ້າ:</strong> ຄວາມສູງເສົາ, ສາຍເທິງອາກາດ, ລະດັບ 22kV / LV</span>
+        </div>
+        <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl">
+          <span class="text-indigo-600 font-bold">3.</span>
+          <span><strong>ຊ່ອງວ່າງ &amp; ຈຸດຂ້າມຖະໜົນ:</strong> ບ່ອນວ່າງແຂວນສາຍໃໝ່, ຂົວ, ຊ່ວງບໍ່ມີເສົາ (ຝັງດິນ/ຕັ້ງເສົາໃໝ່)</span>
+        </div>
+        <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl">
+          <span class="text-indigo-600 font-bold">4.</span>
+          <span><strong>ເສັ້ນທາງເຂົ້າອາຄານ &amp; ແຜນສຳຮອງ:</strong> ໄລຍະທາງຈາກເສົາສຸດທ້າຍເຂົ້າອາຄານ, ຈຸດຂໍຕັດໄຟ/ປິດທາງ, ເສັ້ນທາງສຳຮອງ</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Site Cards Container -->
+    <div id="sites-container" class="space-y-6"></div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white text-xs sm:text-sm font-medium px-4 py-3 rounded-xl shadow-lg flex items-center gap-2">
+      <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span id="toast-message">Saved!</span>
+    </div>
+  </div>
+
+  <!-- Custom Reset Confirmation Modal -->
+  <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-200">
+      <h3 class="text-base font-bold text-slate-900">Reset All Survey Data?</h3>
+      <p class="text-sm text-slate-600 mt-2">
+        This will uncheck all 28 sites and clear your saved GPS captures, technical checkboxes, comments, and photos on this device. This action cannot be undone.
+      </p>
+      <div class="flex justify-end gap-2 mt-6">
+        <button onclick="closeResetModal()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer">
+          Cancel
+        </button>
+        <button onclick="confirmReset()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white transition cursor-pointer">
+          Yes, Reset All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal for Viewing Full-Size Survey Photos -->
+  <div id="photo-modal" onclick="closePhotoModal()" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/85 backdrop-blur-xs p-4">
+    <div onclick="event.stopPropagation()" class="relative max-w-3xl w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
+      <div class="flex items-center justify-between px-4 py-3 bg-slate-800/90 border-b border-slate-700">
+        <span id="photo-modal-caption" class="text-xs sm:text-sm font-medium text-slate-200 truncate">Site Survey Photo</span>
+        <button onclick="closePhotoModal()" class="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition cursor-pointer" aria-label="Close photo preview">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="flex items-center justify-center bg-black max-h-[78vh]">
+        <img id="photo-modal-img" src="" alt="Survey photo full preview" class="max-h-[78vh] w-auto object-contain">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SITES_DATA = [
+      // DAY 1 — Tuesday 24/11/2026 (15 Sites | ~37 km | 09:00 -> ~16:20)
+      {
+        id: 1, origNo: 12, day: 1, stop: 1, time: "09:02 – 09:17",
+        lao: "ກະຊວງແຮງງານ ແລະ ສະຫວັດດີການສັງຄົມ",
+        eng: "Ministry of Labour and Social Welfare",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.967017, 102.609209",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.967017,102.609209"
+      },
+      {
+        id: 2, origNo: 15, day: 1, stop: 2, time: "09:18 – 09:33",
+        lao: "ທະນາຄານແຫ່ງ ສປປ ລາວ",
+        eng: "Bank of the Lao PDR",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.965694, 102.607001",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.965694,102.607001"
+      },
+      {
+        id: 3, origNo: 17, day: 1, stop: 3, time: "09:35 – 09:50",
+        lao: "ຫ້ອງວ່າການສຳນັກງານປະທານປະເທດ",
+        eng: "Office of the President (Presidential Palace)",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.962448, 102.610118",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.962448,102.610118"
+      },
+      {
+        id: 4, origNo: 10, day: 1, stop: 4, time: "09:51 – 10:06",
+        lao: "ກະຊວງສຶກສາທິການ ແລະ ກິລາ",
+        eng: "Ministry of Education and Sports",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.962314, 102.612005",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.962314,102.612005"
+      },
+      {
+        id: 5, origNo: 9, day: 1, stop: 5, time: "10:07 – 10:22",
+        lao: "ກະຊວງເຕັກໂນໂລຊີ ແລະ ການສື່ສານ",
+        eng: "Ministry of Technology and Communications",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.964326, 102.612595",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.964326,102.612595"
+      },
+      {
+        id: 6, origNo: 24, day: 1, stop: 6, time: "10:23 – 10:38",
+        lao: "ແນວລາວສ້າງຊາດ ສູນກາງ",
+        eng: "Lao Front for National Development",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.963830, 102.613894",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.963830,102.613894"
+      },
+      {
+        id: 7, origNo: 2, day: 1, stop: 7, time: "10:39 – 10:54",
+        lao: "ກະຊວງປ້ອງກັນຄວາມສະຫງົບ",
+        eng: "Ministry of Public Security",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.966486, 102.616013",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.966486,102.616013"
+      },
+      {
+        id: 8, origNo: 11, day: 1, stop: 8, time: "10:59 – 11:14",
+        lao: "ກະຊວງສາທາລະນະສຸກ",
+        eng: "Ministry of Health",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.956214, 102.616202",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.956214,102.616202"
+      },
+      {
+        id: 9, origNo: 25, day: 1, stop: 9, time: "11:20 – 11:35",
+        lao: "ສູນກາງສະຫະພັນແມ່ຍິງລາວ",
+        eng: "Lao Women's Union",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.944421, 102.618796",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.944421,102.618796"
+      },
+      {
+        id: 10, origNo: 21, day: 1, stop: 10, time: "11:36 – 11:51",
+        lao: "ອົງການໄອຍະການປະຊາຊົນສູງສຸດ",
+        eng: "Office of the Supreme People's Prosecutor",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "17.945491, 102.620500",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.945491,102.620500"
+      },
+      {
+        id: 11, origNo: 20, day: 1, stop: 11, time: "11:51 – 12:06",
+        lao: "ສານປະຊາຊົນສູງສຸດ",
+        eng: "Supreme People's Court",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ • ພັກທ່ຽງ 12:06–13:06",
+        coords: "17.945561, 102.621416",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.945561,102.621416"
+      },
+      {
+        id: 12, origNo: 26, day: 1, stop: 12, time: "13:17 – 13:32",
+        lao: "ສູນກາງຊາວໜຸ່ມປະຊາຊົນປະຕິວັດລາວ",
+        eng: "Lao People's Revolutionary Youth Union",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ໄປທາງຖະໜົນ T4 ຫຼີກບຸນພະທາດຫຼວງ)",
+        coords: "17.961816, 102.639530",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.961816,102.639530"
+      },
+      {
+        id: 13, origNo: 16, day: 1, stop: 13, time: "13:51 – 14:51",
+        lao: "ອົງການກວດກາລັດ",
+        eng: "State Inspection Authority",
+        surveyType: "confirmed",
+        noteTag: "ນັດເຂົ້າພົບ + ສຳຫຼວດຫ້ອງເຄື່ອງພາຍໃນ (~14:00 ຫຼັງພິທີຕັກບາດ)",
+        coords: "18.002056, 102.646408",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=18.002056,102.646408"
+      },
+      {
+        id: 14, origNo: 19, day: 1, stop: 14, time: "14:55 – 15:10",
+        lao: "ຫ້ອງວ່າການສູນກາງພັກ",
+        eng: "Office of the Party Central Committee",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (Pole Route)",
+        coords: "18.006384, 102.638740",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=18.006384,102.638740"
+      },
+      {
+        id: 15, origNo: 27, day: 1, stop: 15, time: "15:28 – 15:43",
+        lao: "ສູນກາງສະຫະພັນກຳມະບານລາວ",
+        eng: "Lao Federation of Trade Unions",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ • ກັບຄືນ ສູນຂໍ້ມູນສາຍລົມ ~16:20",
+        coords: "18.027669, 102.672010",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=18.027669,102.672010"
+      },
+
+      // DAY 2 — Wednesday 25/11/2026 (13 Sites | ~51 km | 09:00 -> ~17:16)
+      {
+        id: 16, origNo: 13, day: 2, stop: 1, time: "09:03 – 09:48",
+        lao: "ກະຊວງວັດທະນະທຳ ແລະ ທ່ອງທ່ຽວ",
+        eng: "Ministry of Culture and Tourism",
+        surveyType: "confirmed",
+        noteTag: "ຢືນຢັນນັດພົບ ວັນພຸດ (Confirmed Meeting - 45 min)",
+        coords: "17.963517, 102.609982",
+        verifyPin: false,
+        phone: "020 2999 8982",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.963517,102.609982"
+      },
+      {
+        id: 17, origNo: 28, day: 2, stop: 2, time: "09:56 – 10:41",
+        lao: "ອົງການປະກັນສັງຄົມແຫ່ງຊາດ",
+        eng: "National Social Security Fund (NSSF)",
+        surveyType: "confirmed",
+        noteTag: "ຢືນຢັນນັດພົບ ວັນພຸດ (Confirmed Meeting - 45 min)",
+        coords: "17.980499, 102.614388",
+        verifyPin: false,
+        phone: "020 2222 4762",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.980499,102.614388"
+      },
+      {
+        id: 18, origNo: 4, day: 2, stop: 3, time: "11:45 – 12:30",
+        lao: "ກະຊວງຍຸຕິທຳ",
+        eng: "Ministry of Justice (Verify Km 14 vs Patuxai)",
+        surveyType: "confirmed",
+        noteTag: "ຢືນຢັນນັດພົບ ວັນພຸດ • ພັກທ່ຽງ 12:30–13:30",
+        coords: "18.107747, 102.663989",
+        verifyPin: true,
+        phone: "020 7776 5643",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=18.107747,102.663989"
+      },
+      {
+        id: 19, origNo: 1, day: 2, stop: 4, time: "14:29 – 14:44",
+        lao: "ກະຊວງປ້ອງກັນປະເທດ",
+        eng: "Ministry of National Defence",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ ໃກ້ພະທາດຫຼວງ",
+        coords: "17.984063, 102.631515",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.984063,102.631515"
+      },
+      {
+        id: 20, origNo: 18, day: 2, stop: 5, time: "14:47 – 15:02",
+        lao: "ສະພາແຫ່ງຊາດ",
+        eng: "National Assembly",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ ໃກ້ພະທາດຫຼວງ",
+        coords: "17.978420, 102.633594",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.978420,102.633594"
+      },
+      {
+        id: 21, origNo: 5, day: 2, stop: 6, time: "15:07 – 15:22",
+        lao: "ກະຊວງການເງິນ",
+        eng: "Ministry of Finance",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ກຸ່ມໂພນໄຊ)",
+        coords: "17.972795, 102.625126",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.972795,102.625126"
+      },
+      {
+        id: 22, origNo: 3, day: 2, stop: 7, time: "15:22 – 15:37",
+        lao: "ກະຊວງການຕ່າງປະເທດ",
+        eng: "Ministry of Foreign Affairs",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ກຸ່ມໂພນໄຊ)",
+        coords: "17.972489, 102.623953",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.972489,102.623953"
+      },
+      {
+        id: 23, origNo: 6, day: 2, stop: 8, time: "15:38 – 15:53",
+        lao: "ກະຊວງອຸດສາຫະກຳ ແລະ ການຄ້າ",
+        eng: "Ministry of Industry and Commerce",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ກຸ່ມໂພນໄຊ)",
+        coords: "17.971396, 102.623895",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.971396,102.623895"
+      },
+      {
+        id: 24, origNo: 8, day: 2, stop: 9, time: "15:54 – 16:09",
+        lao: "ກະຊວງໂຍທາທິການ ແລະ ຂົນສົ່ງ",
+        eng: "Ministry of Public Works and Transport",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ຫຼັງ 16:00 ບໍ່ຕ້ອງເຂົ້າອາຄານ)",
+        coords: "17.970739, 102.621138",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.970739,102.621138"
+      },
+      {
+        id: 25, origNo: 7, day: 2, stop: 10, time: "16:09 – 16:24",
+        lao: "ກະຊວງກະສິກຳ ແລະ ສິ່ງແວດລ້ອມ",
+        eng: "Ministry of Agriculture and Environment",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ຫຼັງ 16:00 ບໍ່ຕ້ອງເຂົ້າອາຄານ)",
+        coords: "17.970797, 102.619962",
+        verifyPin: true,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.970797,102.619962"
+      },
+      {
+        id: 26, origNo: 23, day: 2, stop: 11, time: "16:25 – 16:40",
+        lao: "ອົງການປົກຄອງ ນະຄອນຫຼວງວຽງຈັນ",
+        eng: "Vientiane Capital Administration Office",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ຫຼັງ 16:00 ບໍ່ຕ້ອງເຂົ້າອາຄານ)",
+        coords: "17.968808, 102.619876",
+        verifyPin: true,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.968808,102.619876"
+      },
+      {
+        id: 27, origNo: 14, day: 2, stop: 12, time: "16:42 – 16:57",
+        lao: "ຫ້ອງວ່າການສຳນັກງານນາຍົກລັດຖະມົນຕີ",
+        eng: "Prime Minister's Office",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ (ຫຼັງ 16:00 ບໍ່ຕ້ອງເຂົ້າອາຄານ)",
+        coords: "17.971769, 102.618230",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.971769,102.618230"
+      },
+      {
+        id: 28, origNo: 22, day: 2, stop: 13, time: "16:58 – 17:13",
+        lao: "ອົງການກວດສອບແຫ່ງລັດ",
+        eng: "State Audit Organization",
+        surveyType: "drive-by",
+        noteTag: "ສຳຫຼວດເສັ້ນທາງເສົາໄຟ • ກັບຄືນ ສູນຂໍ້ມູນສາຍລົມ ~17:16",
+        coords: "17.973453, 102.619574",
+        verifyPin: false,
+        phone: "",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=17.973453,102.619574"
+      }
+    ];
+
+    const DAY_INFO = {
+      1: {
+        title: "Day 1 — ວັນອັງຄານ 24/11/2026 (15 ຈຸດ | ~37 ກມ | 09:00 → ~16:20)",
+        subtitle: "Depart Saylom Data Center (17.970772, 102.613236) at 09:00 • City & South loop, bypassing That Luang festival zone via T4 Road to State Inspection Authority (~14:00).",
+        routeLegs: [
+          {
+            label: "Leg 1: S → 1...8",
+            url: "https://www.google.com/maps/dir/17.970772,102.613236/17.967017,102.609209/17.965694,102.607001/17.962448,102.610118/17.962314,102.612005/17.964326,102.612595/17.963830,102.613894/17.966486,102.616013/17.956214,102.616202"
+          },
+          {
+            label: "Leg 2: 8 → 9...14",
+            url: "https://www.google.com/maps/dir/17.956214,102.616202/17.944421,102.618796/17.945491,102.620500/17.945561,102.621416/17.961816,102.639530/18.002056,102.646408/18.006384,102.638740"
+          },
+          {
+            label: "Leg 3: 14 → 15 → S",
+            url: "https://www.google.com/maps/dir/18.006384,102.638740/18.027669,102.672010/17.970772,102.613236"
+          }
+        ]
+      },
+      2: {
+        title: "Day 2 — ວັນພຸດ 25/11/2026 (13 ຈຸດ | ~51 ກມ | 09:00 → ~17:16)",
+        subtitle: "Depart Saylom Data Center at 09:00 • Morning confirmed meetings (16, 17, 18), followed by afternoon That Luang, Phonxay & Patuxai pole route (19–28).",
+        routeLegs: [
+          {
+            label: "Leg 1: S → 16...24",
+            url: "https://www.google.com/maps/dir/17.970772,102.613236/17.963517,102.609982/17.980499,102.614388/18.107747,102.663989/17.984063,102.631515/17.978420,102.633594/17.972795,102.625126/17.972489,102.623953/17.971396,102.623895/17.970739,102.621138"
+          },
+          {
+            label: "Leg 2: 24 → 25...28 → S",
+            url: "https://www.google.com/maps/dir/17.970739,102.621138/17.970797,102.619962/17.968808,102.619876/17.971769,102.618230/17.973453,102.619574/17.970772,102.613236"
+          }
+        ]
+      }
+    };
+
+    const STORAGE_KEY = 'vientiane_28_sites_survey_v3';
+    const IDB_NAME = 'VientianeSiteSurveyPhotosDB';
+    const IDB_STORE = 'photos';
+    let dbInstance = null;
+    let cloudSyncAvailable = false;
+
+    let state = {
+      completed: {},
+      notes: {},
+      specs: {},
+      comments: {},
+      capturedGps: {},
+      dayFilter: 'all',
+      statusFilter: 'all'
+    };
+
+    let photosBySite = {};
+
+    let liveGps = {
+      active: false,
+      watchId: null,
+      lat: null,
+      lng: null,
+      accuracy: null
+    };
+    let sortByNearest = false;
+
+    const TECH_CHECKLIST_SCHEMA = [
+      {
+        key: 'poleHeight',
+        label: 'Pole Height & Clearance (ຄວາມສູງເສົາ & ລະດັບສາຍ)',
+        options: ['Standard EDL', 'High Clearance', 'Need New Pole']
+      },
+      {
+        key: 'poleRoute',
+        label: 'Pole Route / City Electric Source (ເສັ້ນທາງເສົາ 1 ທາງ ຫຼື 2 ທາງ)',
+        options: ['1-Way Route', '2-Way (Dual Side)', 'Both Sides Available']
+      },
+      {
+        key: 'powerLevel',
+        label: 'Power Voltage Level (ລະດັບແຮງດັນໄຟຟ້າ)',
+        options: ['22kV', '0.4kV (LV)', 'Telecom Pole Only']
+      },
+      {
+        key: 'wallEntry',
+        label: 'Border Wall & Entry Path (ສາຍລອດກຳແພງ ຫຼື ຂ້າມກຳແພງ)',
+        options: ['Under Border Wall', 'Cross Over Wall', 'Underground Duct', 'Aerial Direct']
+      },
+      {
+        key: 'poleSpace',
+        label: 'Hanging Space & Road Crossings (ຊ່ອງວ່າງແຂວນສາຍ & ຈຸດຂ້າມທາງ)',
+        options: ['Space Available', 'Crowded / Tight', 'Road Crossing']
+      },
+      {
+        key: 'lastPoleDist',
+        label: 'Last-Pole to Building Distance & Permit (ໄລຍະເຂົ້າອາຄານ & ຂໍອະນຸຍາດ)',
+        options: ['< 50m', '50–150m', '> 150m', 'Permit / Cut Required']
+      },
+      {
+        key: 'backupGps',
+        label: 'Backup Route, GPS & Photo Verified (ເສັ້ນທາງສຳຮອງ, GPS & ຮູບຖ່າຍ)',
+        options: ['Backup Ready', 'No Backup', 'GPS + Photo OK']
+      }
+    ];
+
+    // Register Offline-First Service Worker for Cloudflare Workers
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('SW registration skipped:', err);
+        });
+      }
+    }
+
+    // Check Cloudflare Worker /api/status (detects optional KV Cloud Sync)
+    async function checkCloudflareWorkerStatus() {
+      try {
+        const res = await fetch('/api/status', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const badgeText = document.getElementById('cf-status-text');
+        const syncBtn = document.getElementById('cloud-sync-btn');
+        if (data.cloudSyncEnabled) {
+          cloudSyncAvailable = true;
+          if (badgeText) badgeText.textContent = 'Cloudflare Edge + KV Sync';
+          if (syncBtn) syncBtn.classList.remove('hidden');
+        } else {
+          if (badgeText) badgeText.textContent = 'Cloudflare Edge • Offline-Ready';
+        }
+      } catch (e) {
+        const badgeText = document.getElementById('cf-status-text');
+        const badgeDot = document.getElementById('cf-status-dot');
+        if (badgeText) badgeText.textContent = 'Offline Mode (Local Saved)';
+        if (badgeDot) badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500';
+      }
+    }
+
+    async function syncWithCloudflare() {
+      if (!cloudSyncAvailable) {
+        showToast('Cloud KV sync is not bound on this Worker.');
+        return;
+      }
+      showToast('Syncing with Cloudflare Edge...');
+      try {
+        const res = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            completed: state.completed,
+            notes: state.notes,
+            specs: state.specs,
+            comments: state.comments,
+            capturedGps: state.capturedGps
+          })
+        });
+        const payload = await res.json();
+        if (payload.ok && payload.data) {
+          state.completed = payload.data.completed || state.completed;
+          state.notes = payload.data.notes || state.notes;
+          state.specs = payload.data.specs || state.specs;
+          state.comments = payload.data.comments || state.comments;
+          state.capturedGps = payload.data.capturedGps || state.capturedGps;
+          saveState();
+          updateProgress();
+          renderSites();
+          showToast('Synced with Cloudflare KV!');
+        } else {
+          showToast('Sync failed: ' + (payload.error || 'Unknown error'));
+        }
+      } catch (err) {
+        showToast('Offline — data stays safe on your phone.');
+      }
+    }
+
+    // IndexedDB Initialization for Crash-Free Photo Storage
+    function initPhotoDB() {
+      return new Promise(resolve => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        const request = indexedDB.open(IDB_NAME, 1);
+        request.onupgradeneeded = event => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE, { keyPath: 'siteId' });
+          }
+        };
+        request.onsuccess = event => {
+          dbInstance = event.target.result;
+          resolve(dbInstance);
+        };
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function loadAllPhotosFromDB() {
+      return new Promise(resolve => {
+        if (!dbInstance) {
+          resolve();
+          return;
+        }
+        const tx = dbInstance.transaction(IDB_STORE, 'readonly');
+        const store = tx.objectStore(IDB_STORE);
+        const req = store.getAll();
+        req.onsuccess = () => {
+          photosBySite = {};
+          (req.result || []).forEach(record => {
+            photosBySite[record.siteId] = record.items || [];
+          });
+          resolve();
+        };
+        req.onerror = () => resolve();
+      });
+    }
+
+    function saveSitePhotosToDB(siteId) {
+      return new Promise(resolve => {
+        if (!dbInstance) {
+          resolve();
+          return;
+        }
+        const tx = dbInstance.transaction(IDB_STORE, 'readwrite');
+        const store = tx.objectStore(IDB_STORE);
+        const items = photosBySite[siteId] || [];
+        if (items.length === 0) {
+          store.delete(siteId);
+        } else {
+          store.put({ siteId, items });
+        }
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      });
+    }
+
+    function clearAllPhotosInDB() {
+      return new Promise(resolve => {
+        if (!dbInstance) {
+          resolve();
+          return;
+        }
+        const tx = dbInstance.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      });
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('vientiane_28_sites_pdf_2day_v2');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = {
+            completed: parsed.completed || {},
+            notes: parsed.notes || {},
+            specs: parsed.specs || {},
+            comments: parsed.comments || {},
+            capturedGps: parsed.capturedGps || {},
+            dayFilter: parsed.dayFilter || 'all',
+            statusFilter: parsed.statusFilter || 'all'
+          };
+        }
+      } catch (e) {
+        console.warn('Could not load saved survey state:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+        showToast('Warning: Could not save text state.');
+      }
+    }
+
+    function parseCoords(coordStr) {
+      const parts = String(coordStr || '').split(',').map(Number);
+      if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+      return { lat: parts[0], lng: parts[1] };
+    }
+
+    function calcDistanceMeters(lat1, lng1, lat2, lng2) {
+      const R = 6371000;
+      const toRad = deg => (deg * Math.PI) / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.round(R * c);
+    }
+
+    function formatDistance(meters) {
+      if (meters == null) return '';
+      if (meters < 1000) return `${meters} m`;
+      return `${(meters / 1000).toFixed(2)} km`;
+    }
+
+    function toggleLiveGps() {
+      if (!navigator.geolocation) {
+        showToast('GPS is not supported on this browser/device.');
+        return;
+      }
+
+      if (liveGps.active) {
+        navigator.geolocation.clearWatch(liveGps.watchId);
+        liveGps.active = false;
+        liveGps.watchId = null;
+        sortByNearest = false;
+        document.getElementById('live-gps-banner').classList.add('hidden');
+        document.getElementById('gps-toggle-label').textContent = 'Start Live GPS';
+        document.getElementById('gps-toggle-btn').className =
+          'inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition cursor-pointer';
+        renderSites();
+        showToast('Live GPS tracking stopped.');
+        return;
+      }
+
+      liveGps.active = true;
+      document.getElementById('live-gps-banner').classList.remove('hidden');
+      document.getElementById('gps-toggle-label').textContent = 'Stop GPS';
+      document.getElementById('gps-toggle-btn').className =
+        'inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white shadow-xs transition cursor-pointer';
+
+      liveGps.watchId = navigator.geolocation.watchPosition(
+        pos => {
+          liveGps.lat = Number(pos.coords.latitude.toFixed(6));
+          liveGps.lng = Number(pos.coords.longitude.toFixed(6));
+          liveGps.accuracy = Math.round(pos.coords.accuracy);
+          document.getElementById('live-gps-coords').textContent = `${liveGps.lat}, ${liveGps.lng}`;
+          document.getElementById('live-gps-acc').textContent = `(±${liveGps.accuracy}m)`;
+          renderSites();
+        },
+        err => {
+          showToast(`GPS Error: ${err.message}`);
+        },
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+      );
+      showToast('Live GPS tracking started.');
+    }
+
+    function captureSiteGps(siteId) {
+      if (!navigator.geolocation) {
+        showToast('GPS not supported on this device.');
+        return;
+      }
+
+      const saveCaptured = (lat, lng, accuracy) => {
+        const site = SITES_DATA.find(s => s.id === siteId);
+        const target = site ? parseCoords(site.coords) : null;
+        const dist = target ? calcDistanceMeters(lat, lng, target.lat, target.lng) : null;
+
+        state.capturedGps[siteId] = {
+          lat: Number(lat.toFixed(6)),
+          lng: Number(lng.toFixed(6)),
+          accuracy: Math.round(accuracy),
+          distanceMeters: dist,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        saveState();
+        renderSites();
+        showToast(`Captured field GPS for Stop #${siteId}`);
+      };
+
+      if (liveGps.active && liveGps.lat !== null) {
+        saveCaptured(liveGps.lat, liveGps.lng, liveGps.accuracy || 10);
+        return;
+      }
+
+      showToast(`Acquiring GPS for Stop #${siteId}...`);
+      navigator.geolocation.getCurrentPosition(
+        pos => saveCaptured(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
+        err => showToast(`Could not get GPS: ${err.message}`),
+        { enableHighAccuracy: true, timeout: 12000 }
+      );
+    }
+
+    function clearCapturedGps(siteId) {
+      delete state.capturedGps[siteId];
+      saveState();
+      renderSites();
+      showToast(`Cleared captured GPS for Stop #${siteId}`);
+    }
+
+    function toggleTechCheck(siteId, fieldKey) {
+      if (!state.specs[siteId]) state.specs[siteId] = {};
+      if (!state.specs[siteId][fieldKey]) {
+        state.specs[siteId][fieldKey] = { checked: true, value: '' };
+      } else {
+        state.specs[siteId][fieldKey].checked = !state.specs[siteId][fieldKey].checked;
+        if (!state.specs[siteId][fieldKey].checked) {
+          state.specs[siteId][fieldKey].value = '';
+        }
+      }
+      saveState();
+      renderSites();
+    }
+
+    function selectTechOption(siteId, fieldKey, optionVal) {
+      if (!state.specs[siteId]) state.specs[siteId] = {};
+      if (!state.specs[siteId][fieldKey]) {
+        state.specs[siteId][fieldKey] = { checked: true, value: optionVal };
+      } else {
+        const currentVal = state.specs[siteId][fieldKey].value;
+        const nextVal = currentVal === optionVal ? '' : optionVal;
+        state.specs[siteId][fieldKey].value = nextVal;
+        state.specs[siteId][fieldKey].checked = Boolean(nextVal);
+      }
+      saveState();
+      renderSites();
+    }
+
+    function toggleSite(siteId) {
+      if (state.completed[siteId]) {
+        delete state.completed[siteId];
+        showToast(`Unchecked Stop #${siteId}`);
+      } else {
+        const now = new Date();
+        state.completed[siteId] = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        showToast(`Completed Stop #${siteId}`);
+      }
+      saveState();
+      updateProgress();
+      renderSites();
+    }
+
+    function updateNote(siteId, value) {
+      state.notes[siteId] = value;
+      saveState();
+    }
+
+    function addComment(siteId) {
+      const input = document.getElementById(`comment-input-${siteId}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) {
+        showToast('Please enter a survey comment first.');
+        return;
+      }
+
+      if (!Array.isArray(state.comments[siteId])) {
+        state.comments[siteId] = [];
+      }
+
+      const now = new Date();
+      const timestamp = now.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      state.comments[siteId].push({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        text,
+        timestamp
+      });
+
+      input.value = '';
+      saveState();
+      renderSites();
+      showToast(`Comment added to Site #${siteId}`);
+    }
+
+    function deleteComment(siteId, commentId) {
+      if (!Array.isArray(state.comments[siteId])) return;
+      state.comments[siteId] = state.comments[siteId].filter(c => c.id !== commentId);
+      if (state.comments[siteId].length === 0) {
+        delete state.comments[siteId];
+      }
+      saveState();
+      renderSites();
+      showToast('Comment removed');
+    }
+
+    function triggerPhotoUpload(siteId, useCamera = false) {
+      const inputId = useCamera ? `camera-input-${siteId}` : `photo-input-${siteId}`;
+      const fileInput = document.getElementById(inputId);
+      if (fileInput) fileInput.click();
+    }
+
+    function compressImageFile(file, maxWidth = 1024, quality = 0.72) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = event.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handlePhotoUpload(siteId, event) {
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
+
+      if (!Array.isArray(photosBySite[siteId])) {
+        photosBySite[siteId] = [];
+      }
+
+      const gpsStamp =
+        liveGps.active && liveGps.lat !== null
+          ? `${liveGps.lat}, ${liveGps.lng}`
+          : state.capturedGps[siteId]
+          ? `${state.capturedGps[siteId].lat}, ${state.capturedGps[siteId].lng}`
+          : '';
+
+      let addedCount = 0;
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        try {
+          const dataUrl = await compressImageFile(file);
+          photosBySite[siteId].push({
+            id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            name: file.name || 'Field Photo',
+            dataUrl,
+            gps: gpsStamp,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          addedCount++;
+        } catch (err) {
+          console.error('Image processing error:', err);
+        }
+      }
+
+      event.target.value = '';
+      if (addedCount > 0) {
+        await saveSitePhotosToDB(siteId);
+        renderSites();
+        showToast(`Saved ${addedCount} photo${addedCount > 1 ? 's' : ''} to Site #${siteId}`);
+      }
+    }
+
+    async function deletePhoto(siteId, photoId) {
+      if (!Array.isArray(photosBySite[siteId])) return;
+      photosBySite[siteId] = photosBySite[siteId].filter(p => p.id !== photoId);
+      if (photosBySite[siteId].length === 0) {
+        delete photosBySite[siteId];
+      }
+      await saveSitePhotosToDB(siteId);
+      renderSites();
+      showToast('Photo removed');
+    }
+
+    function openPhotoModal(siteId, photoId) {
+      const site = SITES_DATA.find(s => s.id === siteId);
+      const photos = photosBySite[siteId] || [];
+      const photo = photos.find(p => p.id === photoId);
+      if (!photo) return;
+
+      const modal = document.getElementById('photo-modal');
+      const img = document.getElementById('photo-modal-img');
+      const caption = document.getElementById('photo-modal-caption');
+
+      img.src = photo.dataUrl;
+      const gpsSuffix = photo.gps ? ` • GPS: ${photo.gps}` : '';
+      caption.textContent = site
+        ? `Site #${site.id} — ${site.eng} (${photo.timestamp}${gpsSuffix})`
+        : photo.name;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closePhotoModal() {
+      const modal = document.getElementById('photo-modal');
+      const img = document.getElementById('photo-modal-img');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      img.src = '';
+    }
+
+    function setDayFilter(day) {
+      state.dayFilter = day;
+      saveState();
+      document.querySelectorAll('.day-tab').forEach(btn => {
+        const isSelected = String(btn.dataset.day) === String(day);
+        btn.className = isSelected
+          ? "day-tab shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition cursor-pointer"
+          : "day-tab shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition cursor-pointer";
+      });
+      renderSites();
+    }
+
+    function setStatusFilter(status) {
+      state.statusFilter = status;
+      saveState();
+      ['all', 'pending', 'completed'].forEach(key => {
+        const btn = document.getElementById(`status-${key}`);
+        if (!btn) return;
+        btn.className = key === status
+          ? "px-3 py-1.5 text-xs font-medium rounded-lg bg-white text-slate-900 shadow-sm transition cursor-pointer"
+          : "px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer";
+      });
+      renderSites();
+    }
+
+    function updateProgress() {
+      const doneCount = Object.keys(state.completed).length;
+      const total = SITES_DATA.length;
+      const pct = Math.round((doneCount / total) * 100);
+      document.getElementById('progress-text').textContent = `${doneCount} / ${total} Completed (${pct}%)`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderSites() {
+      const container = document.getElementById('sites-container');
+      const query = (document.getElementById('search-input').value || '').trim().toLowerCase();
+
+      const nearestBtn = document.getElementById('nearest-btn');
+      if (nearestBtn) {
+        nearestBtn.textContent = sortByNearest ? 'Sort: Nearest First' : 'Sort: Route Order';
+      }
+
+      const enriched = SITES_DATA.map(site => {
+        const target = parseCoords(site.coords);
+        const liveDistance =
+          liveGps.active && liveGps.lat !== null && target
+            ? calcDistanceMeters(liveGps.lat, liveGps.lng, target.lat, target.lng)
+            : null;
+        return { ...site, liveDistance };
+      });
+
+      const filtered = enriched.filter(site => {
+        if (state.dayFilter !== 'all' && site.day !== Number(state.dayFilter)) return false;
+        const isChecked = Boolean(state.completed[site.id]);
+        if (state.statusFilter === 'completed' && !isChecked) return false;
+        if (state.statusFilter === 'pending' && isChecked) return false;
+
+        if (query) {
+          const matchStr = `${site.id} ${site.origNo} ${site.lao} ${site.eng} ${site.noteTag} ${site.coords} ${site.phone}`.toLowerCase();
+          if (!matchStr.includes(query)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+            <p class="text-slate-600 font-semibold">No matching sites found</p>
+            <p class="text-xs text-slate-400 mt-1">Try clearing your search or switching day/status filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const days = [1, 2].filter(d => filtered.some(s => s.day === d));
+      container.innerHTML = days.map(day => {
+        let daySites = filtered.filter(s => s.day === day);
+        if (sortByNearest && liveGps.active && liveGps.lat !== null) {
+          daySites = daySites.slice().sort((a, b) => (a.liveDistance ?? 1e9) - (b.liveDistance ?? 1e9));
+        }
+
+        const dayDoneCount = SITES_DATA.filter(s => s.day === day && state.completed[s.id]).length;
+        const dayTotalCount = SITES_DATA.filter(s => s.day === day).length;
+        const info = DAY_INFO[day];
+
+        const routeButtonsHtml = info.routeLegs.map(leg => `
+          <a
+            href="${leg.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+            ${escapeHtml(leg.label)}
+          </a>
+        `).join('');
+
+        const cardsHtml = daySites.map(site => {
+          const checkedTime = state.completed[site.id];
+          const isChecked = Boolean(checkedTime);
+          const noteVal = state.notes[site.id] || '';
+          const siteSpecs = state.specs[site.id] || {};
+          const siteComments = state.comments[site.id] || [];
+          const sitePhotos = photosBySite[site.id] || [];
+          const captured = state.capturedGps[site.id];
+          const isConfirmed = site.surveyType === 'confirmed';
+
+          const checkedTechCount = TECH_CHECKLIST_SCHEMA.filter(item => siteSpecs[item.key]?.checked).length;
+
+          const techChecklistHtml = TECH_CHECKLIST_SCHEMA.map(item => {
+            const entry = siteSpecs[item.key] || { checked: false, value: '' };
+            const optionsHtml = item.options.map(opt => {
+              const active = entry.value === opt;
+              return `
+                <button
+                  type="button"
+                  onclick="selectTechOption(${site.id}, '${item.key}', '${escapeHtml(opt)}')"
+                  class="px-2 py-0.5 rounded-md text-[11px] font-medium border transition cursor-pointer ${
+                    active
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                      : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-700'
+                  }"
+                >
+                  ${escapeHtml(opt)}
+                </button>
+              `;
+            }).join('');
+
+            return `
+              <div class="p-2.5 rounded-xl border ${entry.checked ? 'bg-indigo-50/40 border-indigo-200' : 'bg-slate-50/80 border-slate-200/80'} transition">
+                <div class="flex items-start gap-2.5">
+                  <button
+                    type="button"
+                    onclick="toggleTechCheck(${site.id}, '${item.key}')"
+                    aria-label="Check ${escapeHtml(item.label)}"
+                    class="mt-0.5 w-4 h-4 rounded border flex items-center justify-center shrink-0 transition cursor-pointer ${
+                      entry.checked
+                        ? 'bg-indigo-600 border-indigo-600 text-white'
+                        : 'bg-white border-slate-300 hover:border-indigo-500'
+                    }"
+                  >
+                    ${entry.checked ? '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+                  </button>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs font-semibold ${entry.checked ? 'text-indigo-950' : 'text-slate-700'}">
+                      ${escapeHtml(item.label)}
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 mt-1.5">
+                      ${optionsHtml}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          const commentsHtml = siteComments.map(c => `
+            <div class="flex items-start justify-between gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-2 text-xs">
+              <div class="min-w-0 flex-1">
+                <p class="text-slate-800 break-words">${escapeHtml(c.text)}</p>
+                <span class="text-[11px] text-slate-400 mt-0.5 block">${escapeHtml(c.timestamp)}</span>
+              </div>
+              <button
+                type="button"
+                onclick="deleteComment(${site.id}, '${c.id}')"
+                class="text-slate-400 hover:text-rose-600 p-1 rounded-lg transition shrink-0 cursor-pointer"
+                title="Delete comment"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          `).join('');
+
+          const photosHtml = sitePhotos.map(p => `
+            <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-square">
+              <img
+                src="${p.dataUrl}"
+                alt="${escapeHtml(p.name)}"
+                onclick="openPhotoModal(${site.id}, '${p.id}')"
+                class="w-full h-full object-cover cursor-pointer hover:opacity-95 transition"
+              >
+              ${p.gps ? `<span class="absolute bottom-1 left-1 right-1 px-1.5 py-0.5 rounded bg-slate-900/75 text-[9px] font-mono text-white truncate">GPS: ${escapeHtml(p.gps)}</span>` : ''}
+              <button
+                onclick="deletePhoto(${site.id}, '${p.id}')"
+                class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-slate-900/75 hover:bg-rose-600 text-white transition cursor-pointer"
+                title="Remove photo"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          `).join('');
+
+          const activeMapUrl = captured
+            ? `https://www.google.com/maps/search/?api=1&query=${captured.lat},${captured.lng}`
+            : site.mapUrl;
+
+          return `
+            <article class="bg-white rounded-2xl border ${isChecked ? 'border-emerald-300 bg-emerald-50/20' : isConfirmed ? 'border-rose-200' : 'border-slate-200'} p-4 sm:p-5 shadow-sm transition">
+              <div class="flex items-start gap-3.5">
+                <!-- Checkbox -->
+                <button
+                  onclick="toggleSite(${site.id})"
+                  aria-label="Toggle Stop ${site.id}"
+                  class="mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition cursor-pointer ${
+                    isChecked
+                      ? 'bg-emerald-600 border-emerald-600 text-white'
+                      : 'border-slate-300 hover:border-indigo-500 bg-white'
+                  }"
+                >
+                  ${isChecked ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+                </button>
+
+                <!-- Details -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold ${isConfirmed ? 'bg-rose-600 text-white' : 'bg-indigo-600 text-white'}">
+                      Stop #${site.id}
+                    </span>
+                    <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+                      ${escapeHtml(site.time)}
+                    </span>
+                    ${site.liveDistance !== null
+                      ? `<span class="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">📏 ${formatDistance(site.liveDistance)} away</span>`
+                      : ''
+                    }
+                    ${isConfirmed
+                      ? '<span class="text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">Confirmed Indoor Meeting</span>'
+                      : '<span class="text-xs font-semibold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-md">Drive-by Pole Survey</span>'
+                    }
+                    ${site.verifyPin
+                      ? '<span class="text-xs font-semibold text-amber-800 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-md">ກວດພິກັດຄືນ (Verify GPS)</span>'
+                      : ''
+                    }
+                    ${site.phone
+                      ? `<a href="tel:${escapeHtml(site.phone.replace(/\s+/g, ''))}" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md hover:bg-emerald-100 transition">📞 ${escapeHtml(site.phone)}</a>`
+                      : ''
+                    }
+                    ${isChecked ? `<span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">Checked at ${escapeHtml(checkedTime)}</span>` : ''}
+                  </div>
+
+                  <h3 class="mt-2 text-base font-bold text-slate-900 ${isChecked ? 'line-through text-slate-500' : ''}">
+                    ${escapeHtml(site.lao)}
+                  </h3>
+                  <p class="text-sm font-medium text-slate-700">${escapeHtml(site.eng)}</p>
+                  <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(site.noteTag)}</p>
+
+                  <!-- Planned vs Captured Field GPS Box -->
+                  <div class="mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+                    <div class="text-[11px] font-mono text-slate-600 space-y-0.5">
+                      <div>Planned GPS: <span class="text-slate-800 font-semibold">${escapeHtml(site.coords)}</span> (List #${site.origNo})</div>
+                      ${captured
+                        ? `<div class="text-emerald-700 font-semibold">Captured GPS: ${captured.lat}, ${captured.lng} (±${captured.accuracy}m • ${captured.timestamp}${captured.distanceMeters !== null ? ` • ${formatDistance(captured.distanceMeters)} from pin` : ''})</div>`
+                        : ''
+                      }
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onclick="captureSiteGps(${site.id})"
+                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer"
+                      >
+                        📍 ${captured ? 'Update GPS' : 'Capture Field GPS'}
+                      </button>
+                      ${captured
+                        ? `<button type="button" onclick="clearCapturedGps(${site.id})" class="px-2 py-1.5 rounded-lg text-xs font-medium bg-slate-200 hover:bg-slate-300 text-slate-700 transition cursor-pointer" title="Clear captured GPS">Clear</button>`
+                        : ''
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Mandatory Field Data & Pole Technical Checkboxes -->
+                  <div class="mt-3 pt-3 border-t border-slate-100">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-bold text-slate-800">
+                        Technical Field Data Checkboxes (${checkedTechCount}/${TECH_CHECKLIST_SCHEMA.length})
+                      </span>
+                      <span class="text-[11px] text-slate-400">Tap checkbox or select spec</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      ${techChecklistHtml}
+                    </div>
+                  </div>
+
+                  <!-- Quick Contact / Extra Measurement Note -->
+                  <div class="mt-3">
+                    <input
+                      type="text"
+                      value="${escapeHtml(noteVal)}"
+                      oninput="updateNote(${site.id}, this.value)"
+                      placeholder="Exact meter distance, pole ID #, contact person name/phone..."
+                      class="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                    >
+                  </div>
+
+                  <!-- Survey Comments Section -->
+                  <div class="mt-3 pt-3 border-t border-slate-100">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-semibold text-slate-700">Survey Comments (${siteComments.length})</span>
+                    </div>
+                    ${siteComments.length > 0 ? `<div class="space-y-1.5 mb-2">${commentsHtml}</div>` : ''}
+                    <div class="flex gap-2">
+                      <input
+                        type="text"
+                        id="comment-input-${site.id}"
+                        onkeydown="if(event.key==='Enter'){event.preventDefault();addComment(${site.id});}"
+                        placeholder="Add detailed survey observation or finding..."
+                        class="flex-1 text-xs px-3 py-2 rounded-xl bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                      >
+                      <button
+                        onclick="addComment(${site.id})"
+                        class="px-3 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0 cursor-pointer"
+                      >
+                        Post
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Survey Photos Section -->
+                  <div class="mt-3 pt-3 border-t border-slate-100">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <span class="text-xs font-semibold text-slate-700">Survey Photos (${sitePhotos.length})</span>
+                      <div class="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onclick="triggerPhotoUpload(${site.id}, true)"
+                          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer"
+                        >
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                          Camera
+                        </button>
+                        <button
+                          type="button"
+                          onclick="triggerPhotoUpload(${site.id}, false)"
+                          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer"
+                        >
+                          Gallery
+                        </button>
+                      </div>
+                      <input
+                        type="file"
+                        id="camera-input-${site.id}"
+                        accept="image/*"
+                        capture="environment"
+                        onchange="handlePhotoUpload(${site.id}, event)"
+                        class="hidden"
+                      >
+                      <input
+                        type="file"
+                        id="photo-input-${site.id}"
+                        accept="image/*"
+                        multiple
+                        onchange="handlePhotoUpload(${site.id}, event)"
+                        class="hidden"
+                      >
+                    </div>
+                    ${sitePhotos.length > 0 ? `<div class="grid grid-cols-3 sm:grid-cols-5 gap-2">${photosHtml}</div>` : ''}
+                  </div>
+
+                  <!-- Map Link -->
+                  <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                    <a
+                      href="${activeMapUrl}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                      ${captured ? 'Open Captured Pin in Google Maps' : 'Open Planned Pin in Google Maps'}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        return `
+          <section class="space-y-3">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col gap-3">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <h2 class="text-base sm:text-lg font-bold text-slate-900">${escapeHtml(info.title)}</h2>
+                  <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(info.subtitle)}</p>
+                </div>
+                <span class="inline-flex items-center self-start sm:self-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 shrink-0">
+                  ${dayDoneCount} / ${dayTotalCount} Done
+                </span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+                <span class="text-xs font-semibold text-slate-500">Google Maps Route Legs:</span>
+                ${routeButtonsHtml}
+              </div>
+            </div>
+            <div class="space-y-3">
+              ${cardsHtml}
+            </div>
+          </section>
+        `;
+      }).join('');
+    }
+
+    async function exportSummary() {
+      const doneCount = Object.keys(state.completed).length;
+      const lines = [
+        `28 Government Offices Fiber Route & Site Survey Report (${doneCount}/${SITES_DATA.length} Completed)`,
+        `Generated: ${new Date().toLocaleString()}`,
+        `----------------------------------------`
+      ];
+
+      SITES_DATA.slice().sort((a, b) => a.id - b.id).forEach(site => {
+        const isDone = Boolean(state.completed[site.id]);
+        const status = isDone ? `[DONE ${state.completed[site.id]}]` : `[PENDING]`;
+        const captured = state.capturedGps[site.id];
+        const gpsInfo = captured
+          ? ` | Captured GPS: ${captured.lat},${captured.lng} (±${captured.accuracy}m)`
+          : ` | Planned GPS: ${site.coords}`;
+        const note = state.notes[site.id] ? ` | Note: ${state.notes[site.id]}` : '';
+        const siteSpecs = state.specs[site.id] || {};
+        const specParts = TECH_CHECKLIST_SCHEMA
+          .filter(item => siteSpecs[item.key]?.checked || siteSpecs[item.key]?.value)
+          .map(item => {
+            const val = siteSpecs[item.key]?.value ? `: ${siteSpecs[item.key].value}` : ': Checked';
+            return `${item.key}${val}`;
+          });
+        const specSummary = specParts.length > 0 ? ` | Specs [${specParts.join(', ')}]` : '';
+        const siteComments = state.comments[site.id] || [];
+        const sitePhotos = photosBySite[site.id] || [];
+        const mediaTag = sitePhotos.length > 0 ? ` | Photos: ${sitePhotos.length}` : '';
+
+        lines.push(`${status} Day ${site.day} Stop #${site.id} (${site.time}) ${site.eng} (${site.lao})${gpsInfo}${specSummary}${note}${mediaTag}`);
+        siteComments.forEach(c => {
+          lines.push(`   - Comment [${c.timestamp}]: ${c.text}`);
+        });
+      });
+
+      const reportText = lines.join('\n');
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(reportText);
+          showToast('Progress report copied to clipboard!');
+          return;
+        }
+      } catch (e) {}
+
+      const textArea = document.createElement("textarea");
+      textArea.value = reportText;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Progress report copied to clipboard!');
+      } catch (err) {
+        showToast('Could not copy report.');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function downloadCsvReport() {
+      const headers = [
+        'Stop_ID', 'Day', 'Orig_No', 'Status', 'Completed_Time',
+        'Lao_Name', 'English_Name', 'Planned_GPS', 'Captured_GPS', 'GPS_Accuracy_m',
+        'Technical_Specs', 'Quick_Note', 'Comments', 'Photo_Count'
+      ];
+
+      const csvEscape = val => `"${String(val ?? '').replace(/"/g, '""')}"`;
+
+      const rows = SITES_DATA.slice().sort((a, b) => a.id - b.id).map(site => {
+        const isDone = Boolean(state.completed[site.id]);
+        const captured = state.capturedGps[site.id];
+        const siteSpecs = state.specs[site.id] || {};
+        const specStr = TECH_CHECKLIST_SCHEMA
+          .filter(item => siteSpecs[item.key]?.checked || siteSpecs[item.key]?.value)
+          .map(item => `${item.key}=${siteSpecs[item.key]?.value || 'Checked'}`)
+          .join('; ');
+        const commentsStr = (state.comments[site.id] || [])
+          .map(c => `[${c.timestamp}] ${c.text}`)
+          .join(' | ');
+        const photoCount = (photosBySite[site.id] || []).length;
+
+        return [
+          site.id,
+          site.day,
+          site.origNo,
+          isDone ? 'DONE' : 'PENDING',
+          state.completed[site.id] || '',
+          site.lao,
+          site.eng,
+          site.coords,
+          captured ? `${captured.lat}, ${captured.lng}` : '',
+          captured ? captured.accuracy : '',
+          specStr,
+          state.notes[site.id] || '',
+          commentsStr,
+          photoCount
+        ].map(csvEscape).join(',');
+      });
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Vientiane_Site_Survey_28_Sites_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('CSV report downloaded!');
+    }
+
+    function exportJsonBackup() {
+      const backupPayload = {
+        exportedAt: new Date().toISOString(),
+        state,
+        photosBySite
+      };
+      const blob = new Blob([JSON.stringify(backupPayload)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Vientiane_Survey_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('Full JSON backup downloaded!');
+    }
+
+    function importJsonBackup(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async e => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.state) {
+            state = {
+              completed: parsed.state.completed || {},
+              notes: parsed.state.notes || {},
+              specs: parsed.state.specs || {},
+              comments: parsed.state.comments || {},
+              capturedGps: parsed.state.capturedGps || {},
+              dayFilter: parsed.state.dayFilter || 'all',
+              statusFilter: parsed.state.statusFilter || 'all'
+            };
+            saveState();
+          }
+          if (parsed.photosBySite && typeof parsed.photosBySite === 'object') {
+            photosBySite = parsed.photosBySite;
+            for (const siteIdStr of Object.keys(photosBySite)) {
+              await saveSitePhotosToDB(Number(siteIdStr));
+            }
+          }
+          updateProgress();
+          renderSites();
+          showToast('Survey backup restored successfully!');
+        } catch (err) {
+          showToast('Invalid JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function openResetModal() {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeResetModal() {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function confirmReset() {
+      state.completed = {};
+      state.notes = {};
+      state.specs = {};
+      state.comments = {};
+      state.capturedGps = {};
+      photosBySite = {};
+      saveState();
+      await clearAllPhotosInDB();
+      updateProgress();
+      renderSites();
+      closeResetModal();
+      showToast('All checkmarks, GPS captures, specs, comments, and photos cleared.');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const label = document.getElementById('toast-message');
+      label.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2600);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      registerServiceWorker();
+      loadState();
+      await initPhotoDB();
+      await loadAllPhotosFromDB();
+      updateProgress();
+      renderSites();
+      checkCloudflareWorkerStatus();
+    });
+  </script>
+</body>
+</html>
